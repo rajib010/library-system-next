@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, ObjectId, mongo } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface Books extends Document {
   ISBN: number;
@@ -76,6 +76,7 @@ export interface Users extends Document {
   username: string;
   email: string;
   password: string;
+  role: string;
   transactions: mongoose.Types.ObjectId[];
 }
 
@@ -103,6 +104,12 @@ const UserSchema: Schema<Users> = new Schema({
       /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
       "Please enter a valid email address",
     ],
+  },
+  role: {
+    type: String,
+    enum: ["admin", "user"],
+    default: "user",
+    required: true,
   },
   transactions: [
     {
