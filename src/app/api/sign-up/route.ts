@@ -8,6 +8,16 @@ export async function POST(request: Request) {
   try {
     const { username, email, password } = await request.json();
 
+    if (!username || !email || !password) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "All fields (username, email, password) are required.",
+        }),
+        { status: 400 }
+      );
+    }
+
     // Check if username or email already exists
     const existingUser = await UserModel.findOne({
       $or: [{ username }, { email }],

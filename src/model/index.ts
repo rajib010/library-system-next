@@ -92,7 +92,7 @@ const UserSchema: Schema<Users> = new Schema({
     type: String,
     required: [true, "Password is required"],
     minlength: 6,
-    maxlength: 15,
+    maxlength: 60,
     trim: true,
   },
   email: {

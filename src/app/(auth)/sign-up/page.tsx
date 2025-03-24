@@ -26,11 +26,20 @@ export default function SignupForm() {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post("/api/sign-up", data);
-      if (response) {
-        alert("Signup successfull");
-        router.replace("/sign-in")
-      }
+      axios
+        .post("/api/sign-up", data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.status === 201) {
+            router.replace("/sign-in");
+          }
+        })
+        .catch((error) => {
+          console.error("Axios Error:", error.response?.data || error.message);
+        });
     } catch (error) {
       console.error("Error during sign-up:", error);
     }
@@ -87,7 +96,7 @@ export default function SignupForm() {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={!isSubmitting}
+              disabled={isSubmitting}
             >
               Sign Up
             </button>
