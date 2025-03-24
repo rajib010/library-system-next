@@ -21,6 +21,9 @@ export async function middleware(request: NextRequest) {
   if (!token && url.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
+  if (token?.role === "user" && url.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
   if (url.pathname === "/") {
     return NextResponse.redirect(new URL("/home", request.url));
   }
