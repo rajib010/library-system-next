@@ -120,9 +120,9 @@ const UserSchema: Schema<Users> = new Schema({
   ],
 });
 
-export const Book = mongoose.model<Books>("Book", BookSchema);
-export const User = mongoose.model<Users>("User", UserSchema);
-export const Transaction = mongoose.model<Transaction>(
+export const BookModel = mongoose.model<Books>("Book", BookSchema);
+export const UserModel = mongoose.model<Users>("User", UserSchema);
+export const TransactionModel = mongoose.model<Transaction>(
   "Transaction",
   TransactionSchema
 );
