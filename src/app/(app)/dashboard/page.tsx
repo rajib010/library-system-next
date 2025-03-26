@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 
 interface Book {
-  _id: number;
+  _id: string;
   ISBN: number;
   title: string;
   author: string;
@@ -34,14 +34,14 @@ const BooksList = () => {
 
   console.log(books);
 
-  const handleEdit = (id: number) => {
+  const handleEdit = (id: string) => {
     router.push(`/edit-book/${id}`);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this book?")) {
       try {
-        await axios.delete(`/api/delete-book/${id}`);
+        await axios.delete(`/api/books/delete-book/${id}`);
         setBooks(books.filter((book) => book._id !== id));
       } catch (error) {
         console.error("Error deleting book:", error);

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface Books{
-  ISBN: number;
+  ISBN: string;
   title: string;
   author: string;
   year: number;

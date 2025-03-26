@@ -59,7 +59,7 @@ const TransactionSchema: Schema<Transaction> = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true, 
+    required: true,
   },
   borrowDate: {
     type: Date,
@@ -120,9 +120,10 @@ const UserSchema: Schema<Users> = new Schema({
   ],
 });
 
-export const BookModel = mongoose.model<Books>("Book", BookSchema);
-export const UserModel = mongoose.model<Users>("User", UserSchema);
-export const TransactionModel = mongoose.model<Transaction>(
-  "Transaction",
-  TransactionSchema
-);
+export const BookModel =
+  mongoose.models.Book || mongoose.model<Books>("Book", BookSchema);
+export const UserModel =
+  mongoose.models.User || mongoose.model<Users>("User", UserSchema);
+export const TransactionModel =
+  mongoose.models.Transaction ||
+  mongoose.model<Transaction>("Transaction", TransactionSchema);

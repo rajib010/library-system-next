@@ -11,8 +11,7 @@ export const bookSchema = z.object({
 
   image: z
     .string()
-    .min(5, "Invalid image URL")
-    .startsWith("https://", { message: "Please provide a correct URL" }),
+    .min(5, "Invalid image URL"),
 
   status: z.enum(["available", "unavailable"]),
 });
