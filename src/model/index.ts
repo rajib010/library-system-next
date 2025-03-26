@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface Books extends Document {
-  ISBN: number;
+  ISBN: string;
   title: string;
   author: string;
   year: number;
@@ -11,7 +11,7 @@ export interface Books extends Document {
 
 const BookSchema: Schema<Books> = new Schema({
   ISBN: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
   },
@@ -59,7 +59,7 @@ const TransactionSchema: Schema<Transaction> = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true, // reference to other documents, should be always true
+    required: true, 
   },
   borrowDate: {
     type: Date,

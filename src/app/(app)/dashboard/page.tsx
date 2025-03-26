@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 
 interface Book {
-  id: number;
+  _id: number;
   ISBN: number;
   title: string;
   author: string;
@@ -25,12 +25,14 @@ const BooksList = () => {
 
   const fetchBooks = async () => {
     try {
-      const response = await axios.get("/api/get-books");
+      const response = await axios.get("/api/books/get-books");
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
     }
   };
+
+  console.log(books);
 
   const handleEdit = (id: number) => {
     router.push(`/edit-book/${id}`);
@@ -40,7 +42,7 @@ const BooksList = () => {
     if (confirm("Are you sure you want to delete this book?")) {
       try {
         await axios.delete(`/api/delete-book/${id}`);
-        setBooks(books.filter((book) => book.id !== id));
+        setBooks(books.filter((book) => book._id !== id));
       } catch (error) {
         console.error("Error deleting book:", error);
       }
@@ -74,7 +76,7 @@ const BooksList = () => {
           <tbody>
             {books.length > 0 ? (
               books.map((book, index) => (
-                <tr key={book.id}>
+                <tr key={book?._id}>
                   <td>{index + 1}</td>
                   <td>{book.ISBN}</td>
                   <td>{book.title}</td>
@@ -92,13 +94,13 @@ const BooksList = () => {
                   <td>
                     <button
                       className="btn btn-warning btn-sm me-2"
-                      onClick={() => handleEdit(book.id)}
+                      onClick={() => handleEdit(book._id)}
                     >
                       ✏ Edit
                     </button>
                     <button
                       className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(book.id)}
+                      onClick={() => handleDelete(book._id)}
                     >
                       🗑 Delete
                     </button>

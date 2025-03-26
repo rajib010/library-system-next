@@ -15,7 +15,7 @@ function AddBook() {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
-      ISBN: 0,
+      ISBN: "",
       title: "",
       author: "",
       image: "",
@@ -27,7 +27,7 @@ function AddBook() {
   const onSubmit = async (data: z.infer<typeof bookSchema>) => {
     setIsLoading(true);
     try {
-      const response = await axios.post("/api/add-book", data, {
+      const response = await axios.post("/api/books/add-book", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -38,7 +38,10 @@ function AddBook() {
         router.push("/dashboard");
       }
     } catch (error) {
-      console.error("Error adding book:", error.response?.data || error.message);
+      console.error(
+        "Error adding book:",
+        error
+      );
     } finally {
       setIsLoading(false);
     }
@@ -54,12 +57,14 @@ function AddBook() {
           <div className="mb-3">
             <label className="form-label">ISBN:</label>
             <input
-              type="number"
+              type="text"
               className="form-control"
               {...form.register("ISBN")}
               placeholder="Enter ISBN"
             />
-            <div className="text-danger">{form.formState.errors.ISBN?.message}</div>
+            <div className="text-danger">
+              {form.formState.errors.ISBN?.message}
+            </div>
           </div>
 
           <div className="mb-3">
@@ -70,7 +75,9 @@ function AddBook() {
               {...form.register("title")}
               placeholder="Enter Title"
             />
-            <div className="text-danger">{form.formState.errors.title?.message}</div>
+            <div className="text-danger">
+              {form.formState.errors.title?.message}
+            </div>
           </div>
 
           <div className="mb-3">
@@ -81,7 +88,9 @@ function AddBook() {
               {...form.register("author")}
               placeholder="Enter Author Name"
             />
-            <div className="text-danger">{form.formState.errors.author?.message}</div>
+            <div className="text-danger">
+              {form.formState.errors.author?.message}
+            </div>
           </div>
 
           <div className="mb-3">
@@ -92,7 +101,9 @@ function AddBook() {
               {...form.register("image")}
               placeholder="Enter Image URL"
             />
-            <div className="text-danger">{form.formState.errors.image?.message}</div>
+            <div className="text-danger">
+              {form.formState.errors.image?.message}
+            </div>
           </div>
 
           <div className="mb-3">
@@ -103,11 +114,17 @@ function AddBook() {
               {...form.register("year")}
               placeholder="Year"
             />
-            <div className="text-danger">{form.formState.errors.year?.message}</div>
+            <div className="text-danger">
+              {form.formState.errors.year?.message}
+            </div>
           </div>
 
           <div className="d-grid">
-            <button type="submit" className="btn btn-primary" disabled={isLoading}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isLoading}
+            >
               {isLoading ? "Adding book..." : "Add Book"}
             </button>
           </div>
