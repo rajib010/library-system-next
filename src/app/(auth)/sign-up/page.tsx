@@ -26,7 +26,7 @@ export default function SignupForm() {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
-      axios
+     await axios
         .post("/api/sign-up", data, {
           headers: {
             "Content-Type": "application/json",
