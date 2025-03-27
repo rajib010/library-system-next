@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 
@@ -17,8 +16,7 @@ interface Book {
 
 const BooksList = () => {
   const [books, setBooks] = useState<Book[]>([]);
-  const router = useRouter();
-
+  
   useEffect(() => {
     fetchBooks();
   }, []);
@@ -30,12 +28,6 @@ const BooksList = () => {
     } catch (error) {
       console.error("Error fetching books:", error);
     }
-  };
-
-  console.log(books);
-
-  const handleEdit = (isbn: string) => {
-    router.push(`/edit-book/${isbn}`);
   };
 
   const handleDelete = async (isbn: string) => {
@@ -92,12 +84,12 @@ const BooksList = () => {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className="btn btn-warning btn-sm me-2"
-                      onClick={() => handleEdit(book.ISBN)}
-                    >
-                      ✏ Edit
-                    </button>
+                    <Link href={`/dashboard/update/${book.ISBN}`}>
+                      <button className="btn btn-warning btn-sm me-2">
+                        ✏ Edit
+                      </button>
+                    </Link>
+
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => handleDelete(book.ISBN)}

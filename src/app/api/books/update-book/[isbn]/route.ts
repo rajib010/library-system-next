@@ -10,6 +10,8 @@ export async function PUT(
   { params }: { params: { isbn: string } }
 ) {
   const { isbn } = await params;
+  console.log("update route hit");
+  
 
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;

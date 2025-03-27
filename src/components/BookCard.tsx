@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-interface Books {
+export interface Books {
   ISBN: string;
   title: string;
   author: string;
@@ -15,9 +15,6 @@ interface BookCardProps {
 }
 
 export default function BookCard({ book }: BookCardProps) {
- 
-
-  
 
   return (
     <Link href={`/book/${book.ISBN}`} passHref>
