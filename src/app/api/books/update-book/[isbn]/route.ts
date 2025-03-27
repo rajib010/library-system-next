@@ -1,16 +1,15 @@
 import dbConnection from "@/lib/dbConnect";
 import { BookModel } from "@/model";
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { User } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export async function PUT(
   request: Request,
-  { params }: { params: { bookid: string } }
+  { params }: { params: { isbn: string } }
 ) {
-  const { bookid } = await params;
+  const { isbn } = await params;
 
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
@@ -28,24 +27,16 @@ export async function PUT(
   try {
     await dbConnection();
 
-    if (!bookid) {
+    if (!isbn) {
       return NextResponse.json(
-        { success: false, message: "Book id is missing" },
-        { status: 400 }
-      );
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(bookid)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid book ID format" },
+        { success: false, message: "ISBN is missing" },
         { status: 400 }
       );
     }
 
     const data = await request.json();
-    const book = await BookModel.findById(bookid);
+    const book = await BookModel.findOne({ISBN:isbn})
 
-    console.log("Book id", bookid);
     console.log("Book", book);
 
     if (!book) {

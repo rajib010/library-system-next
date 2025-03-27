@@ -7,7 +7,7 @@ import Link from "next/link";
 
 interface Book {
   _id: string;
-  ISBN: number;
+  ISBN: string;
   title: string;
   author: string;
   image: string;
@@ -34,15 +34,15 @@ const BooksList = () => {
 
   console.log(books);
 
-  const handleEdit = (id: string) => {
-    router.push(`/edit-book/${id}`);
+  const handleEdit = (isbn: string) => {
+    router.push(`/edit-book/${isbn}`);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (isbn: string) => {
     if (confirm("Are you sure you want to delete this book?")) {
       try {
-        await axios.delete(`/api/books/delete-book/${id}`);
-        setBooks(books.filter((book) => book._id !== id));
+        await axios.delete(`/api/books/delete-book/${isbn}`);
+        setBooks(books.filter((book) => book.ISBN !== isbn));
       } catch (error) {
         console.error("Error deleting book:", error);
       }
@@ -94,13 +94,13 @@ const BooksList = () => {
                   <td>
                     <button
                       className="btn btn-warning btn-sm me-2"
-                      onClick={() => handleEdit(book._id)}
+                      onClick={() => handleEdit(book.ISBN)}
                     >
                       ✏ Edit
                     </button>
                     <button
                       className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(book._id)}
+                      onClick={() => handleDelete(book.ISBN)}
                     >
                       🗑 Delete
                     </button>
