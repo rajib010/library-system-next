@@ -1,11 +1,27 @@
 import dbConnection from "@/lib/dbConnect";
 import { BookModel } from "@/model";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { User } from "next-auth";
 
 export async function POST(req: NextRequest) {
   await dbConnection();
+
+  const session = await getServerSession(authOptions);
+  const user: User = session?.user as User;
+
+  if (user.role !== "admin") {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized request",
+      },
+      { status: 401 }
+    );
+  }
+
   try {
-   
     const { ISBN, title, author, image, year, status } = await req.json();
 
     //check for empty fields

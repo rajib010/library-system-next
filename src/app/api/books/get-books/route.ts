@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   await dbConnection();
 
   try {
-    const books = await BookModel.find({});
+    const books = await BookModel.find({}).lean();
 
     return NextResponse.json(books, {
       status: 200,
