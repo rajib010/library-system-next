@@ -9,57 +9,55 @@ export async function PUT(
   request: Request,
   { params }: { params: { isbn: string } }
 ) {
-  const { isbn } = await params;
-  console.log("update route hit");
-  
+  await dbConnection();
+
+  const { isbn } = params;
+  console.log("Update route hit for ISBN:", isbn);
+
+  if (!isbn) {
+    return NextResponse.json(
+      { success: false, message: "ISBN is missing" },
+      { status: 400 }
+    );
+  }
 
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
 
-  if (user.role !== "admin") {
+  if (!user || user.role !== "admin") {
     return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized request",
-      },
+      { success: false, message: "Unauthorized request" },
       { status: 401 }
     );
   }
 
   try {
-    await dbConnection();
+    const { title, author, image, year, status } = await request.json();
 
-    if (!isbn) {
-      return NextResponse.json(
-        { success: false, message: "ISBN is missing" },
-        { status: 400 }
-      );
-    }
+    // Use `findOneAndUpdate` instead of fetching and updating manually
+    const updatedBook = await BookModel.findOneAndUpdate(
+      { ISBN: isbn },
+      {
+        $set: {
+          title: title ?? undefined,
+          author: author ?? undefined,
+          image: image ?? undefined,
+          year: year ?? undefined,
+          status: status ?? undefined,
+        },
+      },
+      { new: true, runValidators: true } 
+    ).exec();
 
-    const data = await request.json();
-    const book = await BookModel.findOne({ISBN:isbn})
-
-    console.log("Book", book);
-
-    if (!book) {
+    if (!updatedBook) {
       return NextResponse.json(
         { success: false, message: "Book not found" },
         { status: 404 }
       );
     }
 
-    // Update book properties
-    Object.assign(book, {
-      title: data.title || book.title,
-      author: data.author || book.author,
-      image: data.image || book.image,
-      year: data.year || book.year,
-    });
-
-    await book.save();
-
     return NextResponse.json(
-      { success: true, message: "Book updated successfully", data: book },
+      { success: true, message: "Book updated successfully", data: updatedBook },
       { status: 200 }
     );
   } catch (error) {

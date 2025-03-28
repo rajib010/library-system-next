@@ -23,7 +23,6 @@ function UpdatePage() {
       author: "",
       image: "",
       status: "available",
-      year: 0,
     },
   });
 
@@ -55,9 +54,9 @@ function UpdatePage() {
   }, [isbn]);
 
   const onSubmit = async (data: z.infer<typeof bookSchema>) => {
+    console.log("submitting form.....");
     if (!isbn) return;
     setIsLoading(true);
-    console.log("submitting form.....");
 
     try {
       const res = await axios.put(`/api/books/update-book/${isbn}`, data, {
