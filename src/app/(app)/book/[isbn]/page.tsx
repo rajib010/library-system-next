@@ -5,7 +5,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { User } from "next-auth";
+import { Session } from "next-auth";
 
 interface Book {
   _id: string;
@@ -22,17 +22,37 @@ export default function BookDetail() {
   const [book, setBook] = useState<Book | null>(null);
   const [isLoggedin, setIsLoggedin] = useState<boolean>(false);
   const { data: session } = useSession();
-  const user: User = session?.user as User;
+  const user = session?.user as Session["user"];
 
-  function checkLogin() {
-    if (user) {
-      setIsLoggedin(true);
+  async function handleBorrowBook() {
+    console.log(
+      `Making request to: /api/transactions/borrow-book/${book?._id}`
+    );
+
+    try {
+      const response = await axios.post(
+        `/api/transactions/borrow-book/${book?._id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("Book borrowed successfully");
+        fetchBook();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("There was an error borrowing the book. Please try again.");
     }
   }
 
   useEffect(() => {
-    checkLogin();
-  }, []);
+    if (user) {
+      setIsLoggedin(true);
+    }
+  }, [user]);
 
   const fetchBook = async () => {
     try {
@@ -88,10 +108,20 @@ export default function BookDetail() {
                     {book.status}
                   </span>
 
-                  <div className="mt-3">
-                    <button className="btn btn-success me-3" disabled={!isLoggedin}>Borrow</button>
-                    <button className="btn btn-danger" disabled= {!isLoggedin} >Return</button>
-                  </div>
+                  {isLoggedin && (
+                    <div className="mt-3">
+                      {book.status === "available" && (
+                        <button
+                          className="btn btn-success me-3"
+                          onClick={() => handleBorrowBook()}
+                        >
+                          Borrow
+                        </button>
+                      )}
+                      {/* if user has taken the book */}
+                      <button className="btn btn-danger">Return</button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

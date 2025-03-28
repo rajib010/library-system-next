@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
         hostname: "images.amazon.com",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "example.com",
+        pathname: "/**",
+      },{
+        protocol: "http",
+        hostname: "www.example.com", 
+        pathname: "/**",
+      },
     ],
   },
 };

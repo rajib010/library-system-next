@@ -37,7 +37,7 @@ function UpdatePage() {
       // Update the form with the fetched book data
       form.setValue("title", res.data.book[0].title);
       form.setValue("author", res.data.book[0].author);
-      form.setValue("year", res.data.book[0].year);
+      form.setValue("year", (res.data.book[0].year).toString());
       form.setValue("image", res.data.book[0].image);
       form.setValue("status", res.data.book[0].status);
     } catch (error) {

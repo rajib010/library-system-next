@@ -47,7 +47,7 @@ export interface Transaction extends Document {
   bookId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   borrowDate: Date;
-  returnDate: Date;
+  returnDate: Date | null;
 }
 
 const TransactionSchema: Schema<Transaction> = new Schema({
@@ -68,7 +68,7 @@ const TransactionSchema: Schema<Transaction> = new Schema({
   },
   returnDate: {
     type: Date,
-    required: true,
+    default: null,
   },
 });
 
