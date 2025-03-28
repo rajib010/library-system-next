@@ -118,8 +118,6 @@ export default function BookDetail() {
                           Borrow
                         </button>
                       )}
-                      {/* if user has taken the book */}
-                      <button className="btn btn-danger">Return</button>
                     </div>
                   )}
                 </div>

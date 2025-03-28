@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { User } from "next-auth";
 import { useSession, signOut } from "next-auth/react";
@@ -9,7 +9,6 @@ export default function Navbar() {
   const user: User = session?.user as User;
   const isAdmin = user?.role === "admin";
 
-  
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-4 py-3 shadow-sm">
       <div className="container-fluid">
@@ -17,7 +16,7 @@ export default function Navbar() {
           className="navbar-brand text-white font-weight-bold fs-4"
           href="/"
         >
-         Welcome, {user?.username}
+          Welcome, {user?.username}
         </Link>
         <button
           className="navbar-toggler"
@@ -55,7 +54,7 @@ export default function Navbar() {
                 Contact
               </Link>
             </li>
-            {isAdmin && (
+            {isAdmin ? (
               <li className="nav-item">
                 <Link
                   className="nav-link active"
@@ -63,6 +62,16 @@ export default function Navbar() {
                   href="/dashboard"
                 >
                   Dashboard
+                </Link>
+              </li>
+            ) : (
+              <li className="nav-item">
+                <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  href="/transactions"
+                >
+                  Transactions
                 </Link>
               </li>
             )}

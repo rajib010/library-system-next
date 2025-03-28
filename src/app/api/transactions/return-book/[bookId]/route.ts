@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BookModel, UserModel, TransactionModel } from "@/model";
+import { BookModel, TransactionModel } from "@/model";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { getServerSession, User } from "next-auth";
 import dbConnection from "@/lib/dbConnect";
-import { DateTime } from "luxon";
 
 export async function POST(
   req: NextRequest,
@@ -35,14 +34,54 @@ export async function POST(
 
   try {
     await dbConnection();
+    console.log("Hit return book route");
 
     const transaction = await TransactionModel.findOneAndUpdate(
       {
-        $and: [{ userId: session?.user?._id }, { bookId }],
+        userId: user._id,
+        bookId,
       },
       {
-        returnDate: DateTime,
+        returnDate: new Date(),
+      },
+      {
+        new: true,
       }
+    );
+
+    if (!transaction) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "No transaction found for this book",
+        },
+        { status: 404 }
+      );
+    }
+    const book = await BookModel.findByIdAndUpdate(
+      bookId,
+      {
+        status: "available",
+      },
+      { new: true }
+    );
+
+    if (!book) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Book not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Book returned successfully",
+      },
+      { status: 200 }
     );
   } catch (error) {
     console.log("Error in returing book", error);
