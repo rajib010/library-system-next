@@ -21,7 +21,7 @@ export async function POST(
     );
   }
 
-  const bookId = await params;
+  const { bookId } = await params;
   if (!bookId) {
     return NextResponse.json(
       {
@@ -34,7 +34,7 @@ export async function POST(
 
   try {
     await dbConnection();
-    console.log("Hit return book route");
+    // console.log("Hit return book route");
 
     const transaction = await TransactionModel.findOneAndUpdate(
       {
@@ -42,12 +42,14 @@ export async function POST(
         bookId,
       },
       {
-        returnDate: new Date(),
+        returnDate: Date.now(),
       },
       {
         new: true,
       }
     );
+
+    // console.log("Book transaction: ", transaction);
 
     if (!transaction) {
       return NextResponse.json(

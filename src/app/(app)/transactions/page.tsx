@@ -28,7 +28,7 @@ const TransactionsList = () => {
     getTransactions();
   }, []);
 
-  const handleReturnbook = async function (bookId) {
+  const handleReturnbook = async function (bookId: string) {
     try {
       const response = await axios.post(
         `/api/transactions/return-book/${bookId}`
@@ -73,12 +73,16 @@ const TransactionsList = () => {
                   </td>
 
                   <td>
-                    <button
-                      onClick={() => handleReturnbook(data?.bookId)}
-                      className="btn btn-warning btn-sm me-2"
-                    >
-                      ✏ Return
-                    </button>
+                    {data.returnDate ? (
+                      <button className="btn btn-primary" disabled>Returned</button>
+                    ) : (
+                      <button
+                        onClick={() => handleReturnbook(data?.bookId._id)}
+                        className="btn btn-warning btn-sm me-2"
+                      >
+                        ✏ Return
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
