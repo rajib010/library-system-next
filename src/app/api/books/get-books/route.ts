@@ -7,6 +7,8 @@ export async function GET(req: NextRequest) {
 
   try {
     const searchQuery = req.nextUrl.searchParams.get("search") || "";
+    const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
+    const limit = 12; 
 
     let filter = {};
     if (searchQuery) {
@@ -19,16 +21,23 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    const books = await BookModel.find(filter).lean();
+    const totalBooks = await BookModel.countDocuments(filter);
+    const totalPages = Math.ceil(totalBooks / limit);
 
-    console.log("Books from the db", books);
+    const books = await BookModel.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit) 
+      .lean();
 
-    return NextResponse.json(books, {
-      status: 200,
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    });
+    return NextResponse.json(
+      { books, totalPages },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
   } catch (error) {
     console.error("Error in fetching book information:", error);
     return NextResponse.json(

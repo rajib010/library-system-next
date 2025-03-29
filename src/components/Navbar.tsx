@@ -24,12 +24,16 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-4 py-3 shadow-sm">
       <div className="container-fluid">
-        <Link
-          className="navbar-brand text-white font-weight-bold fs-4"
-          href="/"
-        >
-          Welcome, {user?.username}
-        </Link>
+        {user ? (
+          <Link
+            className="navbar-brand text-white font-weight-bold fs-4"
+            href="/"
+          >
+            Welcome, {user?.username}
+          </Link>
+        ):(
+          <h3 className="navbar-brand text-white font-weight-bold fs-4">Library System</h3>
+        )}
         <button
           className="navbar-toggler"
           type="button"

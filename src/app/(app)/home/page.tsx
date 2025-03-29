@@ -4,6 +4,7 @@ import BookCard from "@/components/BookCard";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
 
 interface BookType {
   _id: number;
@@ -16,18 +17,23 @@ interface BookType {
 }
 
 export default function Page() {
-  const [books, setBooks] = useState<BookType[] | []>([]);
+  const [books, setBooks] = useState<BookType[]>([]);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
-  const fetchBooks = async () => {
+  const fetchBooks = async (page: number, query?: string | number | null) => {
     setIsLoading(true);
     try {
       const response = await axios.get("/api/books/get-books", {
-        params: { search: searchQuery },
+        params: { search: query, page },
       });
-      setBooks(response.data);
+
+      setBooks(response?.data.books);
+      setTotalPages(response?.data.totalPages);
+      setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching books:", error);
     } finally {
@@ -36,15 +42,15 @@ export default function Page() {
   };
 
   useEffect(() => {
-    fetchBooks();
+    fetchBooks(currentPage, searchQuery);
   }, [searchQuery]);
 
-  if (isLoading) return <div>Loading..</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="container mt-4">
       <h2 className="mb-3">
-        {searchQuery ? `Results for "${searchQuery}"` : "All Books"}
+        {searchQuery ? `Results for "${searchQuery}"` : ""}
       </h2>
       <div className="row">
         {books.length > 0 ? (
@@ -57,6 +63,15 @@ export default function Page() {
           <p>No books found.</p>
         )}
       </div>
+      {/* Pagination Component */}
+      {totalPages > 1 && (
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          loadFunction={fetchBooks}
+          filter={searchQuery}
+        />
+      )}
     </div>
   );
 }
