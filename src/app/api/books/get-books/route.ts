@@ -6,7 +6,22 @@ export async function GET(req: NextRequest) {
   await dbConnection();
 
   try {
-    const books = await BookModel.find({}).lean();
+    const searchQuery = req.nextUrl.searchParams.get("search") || "";
+
+    let filter = {};
+    if (searchQuery) {
+      filter = {
+        $or: [
+          { title: { $regex: searchQuery, $options: "i" } },
+          { author: { $regex: searchQuery, $options: "i" } },
+          { ISBN: { $regex: searchQuery, $options: "i" } },
+        ],
+      };
+    }
+
+    const books = await BookModel.find(filter).lean();
+
+    console.log("Books from the db", books);
 
     return NextResponse.json(books, {
       status: 200,
@@ -16,9 +31,8 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error in fetching book information:", error);
-
     return NextResponse.json(
-      { success: false, message: "Failed to get all the books" },
+      { success: false, message: "Failed to get books" },
       { status: 500 }
     );
   }

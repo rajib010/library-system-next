@@ -3,11 +3,23 @@
 import { User } from "next-auth";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const user: User = session?.user as User;
   const isAdmin = user?.role === "admin";
+  const isLoggedIn = user ? true : false;
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/home?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-4 py-3 shadow-sm">
@@ -65,6 +77,10 @@ export default function Navbar() {
                 </Link>
               </li>
             ) : (
+              <></>
+            )}
+
+            {!isAdmin && isLoggedIn && (
               <li className="nav-item">
                 <Link
                   className="nav-link active"
@@ -76,12 +92,18 @@ export default function Navbar() {
               </li>
             )}
           </ul>
-          <form className="d-flex ms-lg-3" role="search">
+          <form
+            className="d-flex ms-lg-3"
+            role="search"
+            onSubmit={handleSearch}
+          >
             <input
               className="form-control me-2 border-light"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button className="btn btn-outline-light" type="submit">
               Search
