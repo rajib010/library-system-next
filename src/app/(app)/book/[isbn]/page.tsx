@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
+import BookDetailSkeleton from "@/components/skeletons/Card";
 
 interface Book {
   _id: string;
@@ -70,7 +71,7 @@ export default function BookDetail() {
   }, [isbn]);
 
   if (!book) {
-    return <div>Loading...</div>;
+    return <BookDetailSkeleton />
   }
 
   return (

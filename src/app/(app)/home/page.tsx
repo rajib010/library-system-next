@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import Pagination from "@/components/Pagination";
+import HomePageSkeleton from "@/components/skeletons/Homepage";
 
 interface BookType {
   _id: number;
@@ -45,7 +46,7 @@ export default function Page() {
     fetchBooks(currentPage, searchQuery);
   }, [searchQuery]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <HomePageSkeleton/>;
 
   return (
     <div className="container mt-4">
@@ -60,7 +61,7 @@ export default function Page() {
             </div>
           ))
         ) : (
-          <p>No books found.</p>
+          <HomePageSkeleton />
         )}
       </div>
       {/* Pagination Component */}
