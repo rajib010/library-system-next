@@ -24,7 +24,8 @@ const BooksList = () => {
   const fetchBooks = async () => {
     try {
       const response = await axios.get("/api/books/get-books");
-      setBooks(response.data);
+      console.log(response)
+      setBooks(response.data.books);
     } catch (error) {
       console.error("Error fetching books:", error);
     }

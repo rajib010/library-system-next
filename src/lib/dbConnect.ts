@@ -1,38 +1,21 @@
-import mongoose from "mongoose";
+import { MongoClient, Db } from "mongodb";
 
-type ConnectionObject = {
-  isConnected?: number;
+const client = new MongoClient(process.env.MONGODB_URI!);
+
+let cachedDb: Db | null = null;
+
+const dbConnection  = async function () {
+  if (cachedDb) return cachedDb;
+
+try {
+    await client.connect();
+    const db = client.db();
+    if (db) console.log("Database connected successfully");
+    cachedDb = db;
+    return db;
+} catch (error) {
+  console.error("Error connecting to db", error)
+}
 };
 
-const connection: ConnectionObject = {};
-
-async function dbConnection(): Promise<void> {
-  // Check for existing connection
-  if (connection.isConnected) {
-    console.log("Database is already connected.");
-    return;
-  }
-
-  try {
-    // Ensure the connection URI is defined
-    const dbUri = process.env.MONGODB_URI;
-    if (!dbUri) {
-      throw new Error("MONGODB_URI environment variable is not defined.");
-    }
-
-    const db = await mongoose.connect(dbUri, {});
-
-    connection.isConnected = db.connections[0].readyState;
-    console.log("Database is connected successfully");
-  } catch (error) {
-    console.error("Database connection failed:");
-    // Handle production-specific error behavior or graceful shutdown
-    if (process.env.NODE_ENV === "production") {
-      // Implement graceful shutdown or retry logic in production
-      // For now, it’s safe to exit the process in development
-      process.exit(1);
-    }
-  }
-}
-
-export default dbConnection;
+export default dbConnection 

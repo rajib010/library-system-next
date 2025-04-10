@@ -31,13 +31,11 @@ const BookSchema: Schema<Books> = new Schema({
   },
   image: {
     type: String,
-    required: true,
     default: "https://via.placeholder.com/300x300.png?text=No+Image+Available",
   },
   status: {
     type: String,
     enum: ["available", "unavailable"],
-    required: true,
     default: "available",
     trim: true,
   },
